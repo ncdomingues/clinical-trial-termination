@@ -10,6 +10,8 @@ Cerca de 1 em cada 6 ensaios clínicos é **interrompido** antes do fim previsto
 
 **Resumo em linguagem simples:** [abre o dashboard online](https://ncdomingues.github.io/clinical-trial-termination/trials-at-a-glance.html) ([código](trials-at-a-glance.html)), uma página de síntese para quem não é técnico, em inglês e português.
 
+**Outros projetos:** [Previsão de toxicidade Tox21](https://github.com/ncdomingues/tox21-toxicity) · [Dados da educação em Portugal](https://github.com/ncdomingues/portuguese-education-data)
+
 ## Principais resultados
 1. **A maioria dos ensaios não para porque o medicamento falhou.** As razões mais comuns são o recrutamento lento (35% das interrupções), decisões de negócio ou estratégicas (11%) e falta de financiamento (6%). A falta de eficácia (9%) e a segurança (5%) são menos frequentes.
 
