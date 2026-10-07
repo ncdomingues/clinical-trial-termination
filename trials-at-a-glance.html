@@ -1,0 +1,414 @@
+<meta charset="utf-8">
+<title>Why Clinical Trials Stop Early</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@75..100,500..800&family=Source+Sans+3:ital,wght@0,400;0,600;1,400&family=IBM+Plex+Mono:wght@500&display=swap">
+<style>
+/* Layout: shared portfolio summary style — headline strip, then themed sections of plain bars, each read against the 16% all-trials average. */
+:root {
+  --bg: #f5f6f8;
+  --panel: #ffffff;
+  --ink: #15203a;
+  --ink-2: #4f5668;
+  --ink-3: #7a8091;
+  --line: #e1e4ea;
+  --track: #eceef2;
+  --blue: #2a78d6;
+  --orange: #eb6834;
+  --grey: #b9bcc6;
+  --good: #0f8a4f;
+  --good-bg: #e3f4ea;
+  --warn: #9a6400;
+  --warn-bg: #fbf0d6;
+  --info: #5a4bb3;
+  --info-bg: #ecebfa;
+  --display: "Archivo", "Arial Narrow", system-ui, sans-serif;
+  --body: "Source Sans 3", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --mono: "IBM Plex Mono", ui-monospace, "Cascadia Mono", Consolas, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #12151c; --panel: #1b1f29; --ink: #eef0f5; --ink-2: #b9bdc9; --ink-3: #8b90a0;
+    --line: #2c3240; --track: #262b37; --blue: #3987e5; --orange: #d95926; --grey: #5c6170;
+    --good: #4cc98a; --good-bg: #173326; --warn: #e8b44a; --warn-bg: #3a2f14; --info: #a99ff0; --info-bg: #26233f;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #12151c; --panel: #1b1f29; --ink: #eef0f5; --ink-2: #b9bdc9; --ink-3: #8b90a0;
+  --line: #2c3240; --track: #262b37; --blue: #3987e5; --orange: #d95926; --grey: #5c6170;
+  --good: #4cc98a; --good-bg: #173326; --warn: #e8b44a; --warn-bg: #3a2f14; --info: #a99ff0; --info-bg: #26233f;
+  color-scheme: dark;
+}
+
+* { box-sizing: border-box; }
+body { background: var(--bg); color: var(--ink); font-family: var(--body); font-size: 16px; line-height: 1.5; }
+.wrap { max-width: 1120px; margin: 0 auto; padding-inline: 20px; padding-block: 28px 56px; display: grid; gap: 28px; }
+
+/* language switch: Portuguese hidden unless selected */
+[data-l="pt"] { display: none; }
+:root[data-lang="pt"] [data-l="pt"] { display: revert; }
+:root[data-lang="pt"] [data-l="en"] { display: none; }
+
+h1, h2, h3 { font-family: var(--display); font-stretch: 85%; text-wrap: balance; margin: 0; letter-spacing: -0.01em; }
+h1 { font-size: clamp(30px, 5vw, 46px); font-weight: 800; line-height: 1.05; }
+h2 { font-size: clamp(22px, 3vw, 28px); font-weight: 750; }
+h3 { font-size: 19px; font-weight: 700; line-height: 1.2; }
+p { margin: 0; max-width: 65ch; }
+.eyebrow { font-family: var(--display); font-stretch: 85%; font-weight: 700; font-size: 13px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--ink-3); }
+.muted { color: var(--ink-2); }
+.small { font-size: 14px; }
+.num { font-family: var(--mono); font-variant-numeric: tabular-nums; }
+
+/* header */
+header { display: grid; gap: 14px; }
+.top { display: flex; justify-content: space-between; align-items: center; gap: 12px; flex-wrap: wrap; }
+.lede { font-size: 18px; color: var(--ink-2); }
+.switch { display: inline-flex; border: 1px solid var(--line); border-radius: 999px; padding: 3px; background: var(--panel); }
+.switch button { font: 600 13px var(--body); border: 0; background: transparent; color: var(--ink-2); padding: 6px 14px; border-radius: 999px; cursor: pointer; }
+.switch button[aria-pressed="true"] { background: var(--ink); color: var(--bg); }
+.switch button:focus-visible, .tab:focus-visible { outline: 2px solid var(--blue); outline-offset: 2px; }
+
+/* summary strip */
+.summary { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 1px; background: var(--line); border: 1px solid var(--line); border-radius: 10px; overflow: hidden; }
+.summary > div { background: var(--panel); padding: 18px; display: grid; gap: 6px; align-content: start; }
+.big { font-family: var(--display); font-stretch: 80%; font-weight: 800; font-size: 40px; line-height: 1; }
+.big small { font-size: 18px; font-weight: 600; color: var(--ink-2); }
+
+/* era sections */
+.era { display: grid; gap: 16px; }
+.era-head { display: flex; gap: 12px 20px; align-items: baseline; flex-wrap: wrap; border-bottom: 2px solid var(--ink); padding-bottom: 10px; }
+.era-head .meta { color: var(--ink-2); font-size: 15px; }
+.grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; }
+.card { background: var(--panel); border: 1px solid var(--line); border-radius: 10px; padding: 20px; display: grid; gap: 14px; align-content: start; min-width: 0; }
+.card.wide { grid-column: 1 / -1; }
+.takeaway { font-size: 15.5px; color: var(--ink-2); }
+
+/* grade bars on the 0–20 scale */
+.bars { display: grid; gap: 10px; }
+.bar-group { display: grid; gap: 6px; }
+.bar-group + .bar-group { margin-top: 6px; }
+.group-label { font-weight: 600; font-size: 14px; }
+.bar { display: grid; grid-template-columns: minmax(0, 9.5em) minmax(0, 1fr) 3.2em; align-items: center; gap: 10px; font-size: 14px; }
+.bar .lab { color: var(--ink-2); overflow-wrap: anywhere; }
+.track { position: relative; height: 18px; background: var(--track); border-radius: 0 4px 4px 0; }
+.fill { position: absolute; inset: 0 auto 0 0; border-radius: 0 4px 4px 0; }
+.pass { position: absolute; top: -4px; bottom: -4px; left: 50%; width: 0; border-left: 1.5px dashed var(--ink-3); }
+.val { font-family: var(--mono); font-variant-numeric: tabular-nums; font-size: 14px; text-align: right; }
+.scale { display: grid; grid-template-columns: minmax(0, 9.5em) minmax(0, 1fr) 3.2em; gap: 10px; font-size: 12px; color: var(--ink-3); }
+.scale .ticks { display: flex; justify-content: space-between; position: relative; }
+.legend { display: flex; flex-wrap: wrap; gap: 6px 16px; font-size: 13px; color: var(--ink-2); }
+.key { display: inline-flex; align-items: center; gap: 6px; }
+.sw { width: 12px; height: 12px; border-radius: 3px; display: inline-block; }
+
+/* dot grid (100 students) */
+.dots { display: grid; grid-template-columns: repeat(20, 1fr); gap: 5px; max-width: 420px; }
+.dot { aspect-ratio: 1; border-radius: 50%; background: var(--grey); }
+.dot.fail { background: var(--orange); }
+.dot.flag { box-shadow: 0 0 0 2px var(--panel), 0 0 0 3.5px var(--ink); }
+.dot-legend { display: grid; gap: 6px; font-size: 14px; color: var(--ink-2); }
+.dot-legend .dot { width: 13px; display: inline-block; vertical-align: -2px; margin-right: 8px; }
+
+/* comparison meters (percentile among schools) */
+.meter-row { display: grid; grid-template-columns: minmax(0, 11em) minmax(0, 1fr); gap: 10px 14px; align-items: center; font-size: 14px; }
+.meter { position: relative; height: 26px; border-top: 1px solid var(--line); }
+.meter::before { content: ""; position: absolute; left: 0; right: 0; top: 12px; border-top: 2px solid var(--track); }
+.pin { position: absolute; top: 4px; width: 18px; height: 18px; border-radius: 50%; transform: translateX(-50%); border: 2px solid var(--panel); }
+.pin span { position: absolute; top: -2px; left: 22px; font-family: var(--mono); font-size: 12px; white-space: nowrap; color: var(--ink-2); }
+.pin.gp { background: var(--blue); }
+.pin.ms { background: var(--orange); }
+.pin.ms span { top: auto; bottom: -18px; }
+.meter-axis { display: flex; justify-content: space-between; font-size: 12px; color: var(--ink-3); }
+
+/* then & now verdicts */
+.verdicts { display: grid; gap: 0; }
+.verdict { display: grid; grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr) minmax(0, 1fr) auto; gap: 12px 18px; padding-block: 14px; border-top: 1px solid var(--line); align-items: start; font-size: 15px; }
+.verdict.head { border-top: 0; padding-block: 0 6px; font-size: 12px; text-transform: uppercase; letter-spacing: 0.08em; color: var(--ink-3); font-family: var(--display); font-stretch: 85%; font-weight: 700; }
+.chip { display: inline-flex; align-items: center; gap: 6px; font-size: 13px; font-weight: 600; padding: 3px 10px; border-radius: 999px; white-space: nowrap; }
+.chip::before { font-size: 12px; }
+.chip.same { color: var(--good); background: var(--good-bg); }
+.chip.same::before { content: "✓"; }
+.chip.changed { color: var(--warn); background: var(--warn-bg); }
+.chip.changed::before { content: "↺"; }
+.chip.mixed { color: var(--info); background: var(--info-bg); }
+.chip.mixed::before { content: "≈"; }
+
+.caution { border-left: 4px solid var(--warn); background: var(--warn-bg); border-radius: 0 10px 10px 0; padding: 16px 20px; display: grid; gap: 8px; }
+.caution h3 { color: var(--ink); }
+.caution ul, .card ul { margin: 0; padding-left: 1.2em; display: grid; gap: 6px; max-width: 70ch; }
+footer { font-size: 13px; color: var(--ink-3); display: grid; gap: 6px; border-top: 1px solid var(--line); padding-top: 16px; }
+footer a { color: var(--ink-2); }
+
+@media (max-width: 860px) {
+  .summary { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .grid { grid-template-columns: minmax(0, 1fr); }
+  .verdict { grid-template-columns: minmax(0, 1fr) auto; }
+  .verdict > .then, .verdict > .now { grid-column: 1 / -1; }
+  .verdict.head { display: none; }
+}
+@media (max-width: 480px) {
+  .summary { grid-template-columns: minmax(0, 1fr); }
+  .bar, .scale { grid-template-columns: minmax(0, 6.5em) minmax(0, 1fr) 3em; }
+  .meter-row { grid-template-columns: minmax(0, 1fr); }
+  .big { font-size: 34px; }
+}
+
+
+/* shared components */
+.assay-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px; }
+.family { display: grid; gap: 8px; align-content: start; min-width: 0; }
+.family h4 { margin: 0; font: 700 14px var(--body); color: var(--ink); }
+.pct-bar { display: grid; grid-template-columns: minmax(0, 12em) minmax(0, 1fr) 3.4em; gap: 10px; align-items: center; font-size: 14px; }
+.pct-bar .lab { color: var(--ink-2); overflow-wrap: anywhere; }
+.pct-bar .track { height: 14px; }
+.molfig { background: #ffffff; border: 1px solid var(--line); border-radius: 8px; padding: 6px; }
+.molfig img { display: block; width: 100%; height: auto; }
+.callout { font-size: 15.5px; color: var(--ink-2); }
+.callout b { color: var(--ink); }
+.pick { display: grid; grid-template-columns: repeat(10, minmax(0, 1fr)); gap: 6px; max-width: 360px; }
+.pick i { aspect-ratio: 1; border-radius: 50%; background: var(--grey); }
+.pick i.tox { background: var(--orange); }
+.pick-row { display: grid; gap: 6px; }
+.pick-row + .pick-row { margin-top: 10px; }
+@media (max-width: 860px) { .assay-grid { grid-template-columns: minmax(0, 1fr); } }
+@media (max-width: 480px) { .pct-bar { grid-template-columns: minmax(0, 7.5em) minmax(0, 1fr) 3em; } }
+
+
+/* additions for this page */
+.group-title { font: 600 13px var(--body); color: var(--ink-2); margin-top: 4px; }
+.pair { display: grid; grid-template-columns: minmax(0, 12em) minmax(0, 1fr) 3.4em; gap: 4px 10px; align-items: center; font-size: 14px; }
+.pair .lab { grid-row: span 2; color: var(--ink-2); overflow-wrap: anywhere; align-self: center; }
+.pair .track { height: 11px; }
+.pairs { display: grid; gap: 10px; }
+.years { display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); gap: 6px; align-items: end; height: 170px; padding-top: 18px; }
+.yr { display: flex; flex-direction: column; justify-content: flex-end; align-items: stretch; gap: 3px; height: 100%; text-align: center; font-size: 11.5px; color: var(--ink-3); min-width: 0; }
+.yr .col { background: var(--blue); border-radius: 4px 4px 0 0; width: 100%; position: relative; }
+.yr .col.hot { background: var(--orange); }
+.yr .v { font-family: var(--mono); font-size: 11px; color: var(--ink-2); }
+.score { display: flex; gap: 22px; flex-wrap: wrap; align-items: flex-end; }
+.score > div { display: grid; gap: 4px; }
+.score .big { font-size: 44px; }
+.strike { text-decoration: line-through; text-decoration-thickness: 3px; text-decoration-color: var(--orange); color: var(--ink-3); }
+@media (max-width: 480px) {
+  .pair { grid-template-columns: minmax(0, 7.5em) minmax(0, 1fr) 3em; }
+  .years { gap: 3px; }
+  .yr { font-size: 9.5px; }
+  .yr .v { font-size: 9px; }
+}
+</style>
+
+<div class="wrap">
+  <header>
+    <div class="top">
+      <span class="eyebrow"><span data-l="en">ClinicalTrials.gov project · plain-language summary</span><span data-l="pt">Projeto ClinicalTrials.gov · resumo em linguagem simples</span></span>
+      <div class="switch" role="group" aria-label="Language">
+        <button type="button" id="btn-en" aria-pressed="true" data-set="en">English</button>
+        <button type="button" id="btn-pt" aria-pressed="false" data-set="pt">Português</button>
+      </div>
+    </div>
+    <h1><span data-l="en">Why do clinical trials stop early?</span><span data-l="pt">Porque é que os ensaios clínicos param antes do tempo?</span></h1>
+    <p class="lede"><span data-l="en">We looked at 46,911 phase 2 and phase 3 trials of new treatments that started between 2008 and 2019 and are registered on ClinicalTrials.gov. Each one either finished as planned or was stopped early. Which ones stop, and why?</span><span data-l="pt">Analisámos 46 911 ensaios de fase 2 e 3 de novos tratamentos, iniciados entre 2008 e 2019 e registados no ClinicalTrials.gov. Cada um terminou como previsto ou foi interrompido antes do tempo. Quais param, e porquê?</span></p>
+  </header>
+
+  <section class="summary" aria-label="Key findings">
+    <div>
+      <span class="eyebrow"><span data-l="en">Stopped early</span><span data-l="pt">Interrompidos</span></span>
+      <span class="big num">1<small>&nbsp;<span data-l="en">in 6</span><span data-l="pt">em 6</span></small></span>
+      <p class="small muted"><span data-l="en">trials (16%) end before reaching their planned goal.</span><span data-l="pt">ensaios (16%) terminam antes de atingir o objetivo previsto.</span></p>
+    </div>
+    <div>
+      <span class="eyebrow"><span data-l="en">Top reason</span><span data-l="pt">Razão principal</span></span>
+      <span class="big num">35%</span>
+      <p class="small muted"><span data-l="en">of stopped trials could not recruit enough patients.</span><span data-l="pt">dos ensaios interrompidos não conseguiram recrutar doentes suficientes.</span></p>
+    </div>
+    <div>
+      <span class="eyebrow"><span data-l="en">Stopped for safety</span><span data-l="pt">Parados por segurança</span></span>
+      <span class="big num">5%</span>
+      <p class="small muted"><span data-l="en">of stopped trials. Most stops are about patients, money or business, not harm.</span><span data-l="pt">dos ensaios interrompidos. A maioria para por falta de doentes, dinheiro ou negócio, não por dano.</span></p>
+    </div>
+    <div>
+      <span class="eyebrow"><span data-l="en">Risk can be spotted</span><span data-l="pt">O risco é detetável</span></span>
+      <span class="big num">8×</span>
+      <p class="small muted"><span data-l="en">more stops in the trials our model rated riskiest than in the safest.</span><span data-l="pt">mais interrupções nos ensaios que o modelo considerou mais arriscados do que nos mais seguros.</span></p>
+    </div>
+  </section>
+
+  <section class="era">
+    <div class="era-head">
+      <h2><span data-l="en">Why they stop</span><span data-l="pt">Porque param</span></h2>
+      <span class="meta"><span data-l="en">share of the 7,707 stopped trials · a trial can give more than one reason</span><span data-l="pt">percentagem dos 7 707 ensaios interrompidos · um ensaio pode indicar mais do que uma razão</span></span>
+    </div>
+    <div class="grid">
+      <article class="card">
+        <h3><span data-l="en">Finding patients is the biggest problem</span><span data-l="pt">Encontrar doentes é o maior problema</span></h3>
+        <div id="c-reasons" class="bars"></div>
+        <p class="takeaway"><span data-l="en">Lack of efficacy and safety concerns, the reasons people usually imagine, account for only about 1 in 7 stops. Reasons were read from sponsors' own short explanations; a third are vague or missing.</span><span data-l="pt">A falta de eficácia e as preocupações de segurança, as razões em que normalmente se pensa, explicam só cerca de 1 em cada 7 interrupções. As razões foram lidas nas explicações curtas dos promotores; um terço é vago ou não existe.</span></p>
+      </article>
+      <article class="card">
+        <h3><span data-l="en">Companies and universities stop for different reasons</span><span data-l="pt">Empresas e universidades param por razões diferentes</span></h3>
+        <div class="legend" id="lg-sponsor"></div>
+        <div id="c-sponsor" class="pairs"></div>
+        <p class="takeaway"><span data-l="en">Companies often drop a trial for business reasons, such as a change of priorities or a merger. Universities and hospitals struggle more with recruitment, money and staff: almost half of their stopped trials could not find enough patients.</span><span data-l="pt">As empresas largam muitas vezes um ensaio por razões de negócio, como uma mudança de prioridades ou uma fusão. Universidades e hospitais têm mais dificuldade com recrutamento, dinheiro e pessoal: quase metade dos seus ensaios interrompidos não encontrou doentes suficientes.</span></p>
+      </article>
+    </div>
+  </section>
+
+  <section class="era">
+    <div class="era-head">
+      <h2><span data-l="en">Which trials stop more often</span><span data-l="pt">Que ensaios param mais</span></h2>
+      <span class="meta"><span data-l="en">share of trials stopped early · the dashed line is the average for all trials (16%)</span><span data-l="pt">percentagem de ensaios interrompidos · a linha tracejada é a média de todos os ensaios (16%)</span></span>
+    </div>
+    <div class="grid">
+      <article class="card">
+        <h3><span data-l="en">Cancer trials stop most, infection trials least</span><span data-l="pt">Os ensaios de cancro param mais, os de infeções menos</span></h3>
+        <div id="c-areas" class="bars"></div>
+        <p class="takeaway"><span data-l="en">Cancer trials often need narrowly defined patients and compete with each other to recruit them. Vaccine and diabetes trials draw on large populations that are easier to reach. A trial can count in more than one area.</span><span data-l="pt">Os ensaios de cancro precisam muitas vezes de doentes com perfis muito específicos e competem entre si para os recrutar. Os de vacinas e diabetes recorrem a populações grandes e mais fáceis de alcançar. Um ensaio pode contar em mais do que uma área.</span></p>
+      </article>
+      <div style="display:grid; gap:16px; align-content:start; min-width:0">
+        <article class="card">
+          <h3><span data-l="en">Simpler, exploratory designs stop more</span><span data-l="pt">Desenhos mais simples e exploratórios param mais</span></h3>
+          <div class="legend" id="lg-design"></div>
+          <div id="c-design" class="pairs"></div>
+          <p class="takeaway"><span data-l="en">Earlier-phase, open-label and single-group trials are often small and exploratory. Trials with a safety monitoring board stop more because stopping early when the data look bad is exactly that board's job.</span><span data-l="pt">Ensaios de fase mais inicial, abertos e com um só grupo são muitas vezes pequenos e exploratórios. Os que têm uma comissão de monitorização param mais porque recomendar parar quando os dados correm mal é precisamente a função dessa comissão.</span></p>
+        </article>
+        <article class="card">
+          <h3><span data-l="en">Stricter entry rules, more stops</span><span data-l="pt">Critérios de entrada mais restritos, mais interrupções</span></h3>
+          <div id="c-criteria" class="bars"></div>
+          <p class="takeaway"><span data-l="en">Trials grouped by how long their list of eligibility rules is. The longer the list, the fewer patients qualify.</span><span data-l="pt">Ensaios agrupados pelo tamanho da lista de critérios de elegibilidade. Quanto mais longa a lista, menos doentes se qualificam.</span></p>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <section class="era">
+    <div class="era-head">
+      <h2><span data-l="en">Can we see it coming?</span><span data-l="pt">Dá para prever?</span></h2>
+    </div>
+    <div class="grid">
+      <article class="card">
+        <h3><span data-l="en">The riskiest trials stop 8 times as often</span><span data-l="pt">Os ensaios mais arriscados param 8 vezes mais</span></h3>
+        <div id="c-deciles" class="bars"></div>
+        <p class="takeaway"><span data-l="en">We trained a model on trials that started in 2008–2015, using only what is known when a trial is registered. We then ranked the trials that started in 2016–2019 into ten equal groups by predicted risk. The top group really did stop far more often.</span><span data-l="pt">Treinámos um modelo com ensaios iniciados em 2008–2015, usando só o que se sabe no momento do registo. Depois ordenámos os ensaios iniciados em 2016–2019 em dez grupos iguais por risco previsto. O grupo de topo parou de facto muito mais vezes.</span></p>
+      </article>
+      <div style="display:grid; gap:16px; align-content:start; min-width:0">
+        <article class="card">
+          <h3><span data-l="en">Good enough to flag risk, not to predict each trial</span><span data-l="pt">Serve para assinalar risco, não para prever cada ensaio</span></h3>
+          <div class="score">
+            <div><span class="big num">69</span><span class="small muted"><span data-l="en">our model</span><span data-l="pt">o nosso modelo</span></span></div>
+            <div><span class="big num strike">82</span><span class="small muted"><span data-l="en">with a hidden "cheat"</span><span data-l="pt">com uma "batota" escondida</span></span></div>
+            <div><span class="big num" style="color:var(--ink-3)">50</span><span class="small muted"><span data-l="en">coin toss</span><span data-l="pt">moeda ao ar</span></span></div>
+          </div>
+          <p class="takeaway"><span data-l="en">Times in 100 that the model ranks a trial that stopped above one that finished. Most reasons for stopping, like slow recruitment or a company's change of plans, only show up after a trial starts.</span><span data-l="pt">Vezes em 100 que o modelo põe um ensaio que parou acima de um que terminou. A maioria das razões, como o recrutamento lento ou uma mudança de planos da empresa, só aparece depois de o ensaio começar.</span></p>
+          <p class="takeaway"><span data-l="en"><b>The cheat:</b> adding the number of patients actually enrolled makes the model look much better. But that number is only known at the end, and a trial that stopped early has fewer patients because it stopped. It's a classic trap in data science.</span><span data-l="pt"><b>A batota:</b> juntar o número de doentes que realmente entraram faz o modelo parecer muito melhor. Mas esse número só se conhece no fim, e um ensaio que parou cedo tem menos doentes precisamente porque parou. É uma armadilha clássica em ciência de dados.</span></p>
+        </article>
+        <article class="card">
+          <h3><span data-l="en">More stops recently, partly from COVID-19</span><span data-l="pt">Mais interrupções recentes, em parte pela COVID-19</span></h3>
+          <div class="years" id="c-years" role="img" aria-label="Share stopped by start year, from 16% in 2008 to 21% in 2019"></div>
+          <p class="takeaway"><span data-l="en">By the year the trial started. Trials still recruiting in 2020 were hit by the pandemic.</span><span data-l="pt">Pelo ano em que o ensaio começou. Os ensaios que ainda recrutavam em 2020 foram afetados pela pandemia.</span></p>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <aside class="caution">
+    <h3><span data-l="en">Before drawing conclusions</span><span data-l="pt">Antes de tirar conclusões</span></h3>
+    <ul>
+      <li><span data-l="en">Trials with a US site stop more often on paper (21% vs 12%). Part of that is reporting: US law requires status updates, while elsewhere a quietly stopped trial often stays listed as "unknown" and is missing from these data.</span><span data-l="pt">Os ensaios com um centro nos EUA param mais no papel (21% contra 12%). Em parte é uma questão de registo: a lei americana obriga a atualizar o estado, enquanto noutros países um ensaio parado fica muitas vezes como "desconhecido" e não entra nestes dados.</span></li>
+      <li><span data-l="en">Reasons come from short free-text notes, grouped by keyword rules. They are approximate.</span><span data-l="pt">As razões vêm de notas curtas em texto livre, agrupadas por regras de palavras-chave. São aproximadas.</span></li>
+      <li><span data-l="en">These are patterns, not causes. A design feature linked to stopping does not necessarily make a trial stop.</span><span data-l="pt">São padrões, não causas. Uma característica associada a interrupções não faz necessariamente um ensaio parar.</span></li>
+    </ul>
+  </aside>
+
+  <footer>
+    <span><span data-l="en">Source:</span><span data-l="pt">Fonte:</span> <a href="https://clinicaltrials.gov/" target="_blank" rel="noopener">ClinicalTrials.gov</a> (API v2) · <span data-l="en">46,911 interventional phase 2/3 trials started 2008–2019, completed or terminated.</span><span data-l="pt">46 911 ensaios de intervenção de fase 2/3 iniciados em 2008–2019, concluídos ou interrompidos.</span></span>
+    <span><span data-l="en">Code and notebooks:</span><span data-l="pt">Código e notebooks:</span> <a href="https://github.com/ncdomingues/clinical-trial-termination" target="_blank" rel="noopener">GitHub</a>.</span>
+  </footer>
+</div>
+
+<script>
+(function () {
+  const root = document.documentElement;
+  let lang = "en";
+  try { lang = localStorage.getItem("lang") === "pt" ? "pt" : "en"; } catch (e) {}
+  const fmt = v => v.toLocaleString(lang === "pt" ? "pt-PT" : "en-GB", { maximumFractionDigits: 0 });
+  const AVG = 16.4;
+
+  const L = {
+    en: {
+      reasons: [["Not enough patients", 35.1], ["Business or strategy", 10.8], ["Treatment didn't work", 9.1], ["Funding", 6.2],
+                ["Safety", 4.7], ["Investigator or site", 3.5], ["Drug supply or regulator", 3.3], ["COVID-19", 3.0], ["Other or not stated", 33.4]],
+      ind: "Companies", acad: "Universities and hospitals",
+      sponsorRows: [["Not enough patients", 19.5, 47.8], ["Business or strategy", 22.3, 1.6], ["Treatment didn't work", 13.1, 5.9],
+                    ["Funding", 1.4, 10.7], ["Investigator or site", 0.3, 6.3]],
+      areas: [["Cancer", 24.8], ["Blood", 23.5], ["Digestive", 19.2], ["Skin & connective tissue", 18.9], ["Heart & circulation", 18.7],
+              ["Brain & nerves", 18.5], ["Injuries", 18.5], ["Urinary & reproductive", 18.4], ["Immune system", 17.2], ["Lungs & airways", 16.9],
+              ["Hormones", 15.3], ["Muscles & bones", 14.8], ["Eye", 14.1], ["Mental health", 13.6], ["Metabolism (e.g. diabetes)", 11.5], ["Infections", 10.4]],
+      yes: "yes", no: "no",
+      design: [["Early phase (1/2 or 2)", 18.8, 12.7], ["Open-label (no blinding)", 20.0, 13.0], ["Not randomised", 21.3, 14.1], ["Safety monitoring board", 19.1, 14.2]],
+      criteria: [["Shortest fifth", 10.6], ["Second", 15.3], ["Middle", 16.8], ["Fourth", 18.7], ["Longest fifth", 20.9]],
+      dec: n => n === 1 ? "Lowest risk" : n === 10 ? "Highest risk" : "Group " + n, avg: "average",
+    },
+    pt: {
+      reasons: [["Doentes insuficientes", 35.1], ["Negócio ou estratégia", 10.8], ["O tratamento não resultou", 9.1], ["Financiamento", 6.2],
+                ["Segurança", 4.7], ["Investigador ou centro", 3.5], ["Medicamento ou regulador", 3.3], ["COVID-19", 3.0], ["Outra ou não indicada", 33.4]],
+      ind: "Empresas", acad: "Universidades e hospitais",
+      sponsorRows: [["Doentes insuficientes", 19.5, 47.8], ["Negócio ou estratégia", 22.3, 1.6], ["O tratamento não resultou", 13.1, 5.9],
+                    ["Financiamento", 1.4, 10.7], ["Investigador ou centro", 0.3, 6.3]],
+      areas: [["Cancro", 24.8], ["Sangue", 23.5], ["Aparelho digestivo", 19.2], ["Pele e tecido conjuntivo", 18.9], ["Coração e circulação", 18.7],
+              ["Cérebro e nervos", 18.5], ["Lesões", 18.5], ["Urinário e reprodutor", 18.4], ["Sistema imunitário", 17.2], ["Pulmões e vias aéreas", 16.9],
+              ["Hormonas", 15.3], ["Músculos e ossos", 14.8], ["Olhos", 14.1], ["Saúde mental", 13.6], ["Metabolismo (ex. diabetes)", 11.5], ["Infeções", 10.4]],
+      yes: "sim", no: "não",
+      design: [["Fase inicial (1/2 ou 2)", 18.8, 12.7], ["Aberto (sem ocultação)", 20.0, 13.0], ["Não aleatorizado", 21.3, 14.1], ["Comissão de monitorização", 19.1, 14.2]],
+      criteria: [["Quinto mais curto", 10.6], ["Segundo", 15.3], ["Do meio", 16.8], ["Quarto", 18.7], ["Quinto mais longo", 20.9]],
+      dec: n => n === 1 ? "Menor risco" : n === 10 ? "Maior risco" : "Grupo " + n, avg: "média",
+    },
+  };
+
+  function bars(id, rows, max, mark) {
+    document.getElementById(id).innerHTML = rows.map(([label, v, color]) => {
+      const ref = mark != null ? '<span class="pass" style="left:' + (mark / max * 100) + '%" aria-hidden="true"></span>' : "";
+      return '<div class="pct-bar" title="' + label + ": " + fmt(v) + '%"><span class="lab">' + label + '</span>' +
+        '<span class="track"><span class="fill" style="width:' + Math.min(100, v / max * 100) + '%;background:' + color + '"></span>' + ref + "</span>" +
+        '<span class="val">' + fmt(v) + "%</span></div>";
+    }).join("");
+  }
+  function pairs(id, rows, max, colors, mark) {
+    document.getElementById(id).innerHTML = rows.map(([label, a, b]) => {
+      const ref = mark != null ? '<span class="pass" style="left:' + (mark / max * 100) + '%" aria-hidden="true"></span>' : "";
+      const row = (v, c) => '<span class="track"><span class="fill" style="width:' + Math.min(100, v / max * 100) + '%;background:' + c + '"></span>' + ref + '</span><span class="val">' + fmt(v) + "%</span>";
+      return '<div class="pair"><span class="lab">' + label + "</span>" + row(a, colors[0]) + row(b, colors[1]) + "</div>";
+    }).join("");
+  }
+  const legend = (id, items) => {
+    document.getElementById(id).innerHTML = items.map(([c, t]) => '<span class="key"><i class="sw" style="background:' + c + '"></i>' + t + "</span>").join("");
+  };
+
+  function render() {
+    const t = L[lang], O = "var(--orange)", B = "var(--blue)", G = "var(--grey)";
+    bars("c-reasons", t.reasons.map(([l, v], i) => [l, v, i === t.reasons.length - 1 ? G : O]), 40);
+    legend("lg-sponsor", [[B, t.ind], [O, t.acad]]);
+    pairs("c-sponsor", t.sponsorRows, 50, [B, O]);
+    bars("c-areas", t.areas.map(([l, v]) => [l, v, v > AVG ? O : B]), 30, AVG);
+    legend("lg-design", [[O, t.yes], [B, t.no]]);
+    pairs("c-design", t.design, 30, [O, B], AVG);
+    bars("c-criteria", t.criteria.map(([l, v]) => [l, v, v > AVG ? O : B]), 30, AVG);
+    const dec = [4.7, 6.4, 9.2, 13.4, 17.4, 18.7, 21.9, 24.3, 32.2, 38.6];
+    bars("c-deciles", dec.map((v, i) => [t.dec(i + 1), v, i === 9 ? O : B]), 45, 18.7);
+    const years = [[2008, 16.1], [2009, 15.4], [2010, 15.3], [2011, 14.9], [2012, 15.3], [2013, 15.5], [2014, 14.9], [2015, 16.3], [2016, 14.9], [2017, 18.3], [2018, 20.4], [2019, 21.4]];
+    document.getElementById("c-years").innerHTML = years.map(([y, v]) =>
+      '<div class="yr" title="' + y + ": " + fmt(v) + '%"><span class="v">' + fmt(v) + '</span><span class="col' + (y >= 2017 ? " hot" : "") +
+      '" style="height:' + Math.round(v / 25 * 120) + 'px"></span><span>' + String(y).slice(2) + "</span></div>").join("");
+  }
+
+  function setLang(l) {
+    lang = l;
+    root.setAttribute("data-lang", l);
+    root.setAttribute("lang", l === "pt" ? "pt-PT" : "en");
+    document.querySelectorAll(".switch button").forEach(b => b.setAttribute("aria-pressed", String(b.dataset.set === l)));
+    try { localStorage.setItem("lang", l); } catch (e) {}
+    render();
+  }
+  document.querySelectorAll(".switch button").forEach(b => b.addEventListener("click", () => setLang(b.dataset.set)));
+  setLang(lang);
+})();
+</script>
