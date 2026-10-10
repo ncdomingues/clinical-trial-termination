@@ -8,7 +8,7 @@ About 1 in 6 clinical trials is **terminated** before reaching its planned end. 
 
 **Plain-language summary:** [open the live dashboard](https://ncdomingues.github.io/clinical-trial-termination/trials-at-a-glance.html) ([source](trials-at-a-glance.html)), a one-page overview for non-technical readers in English and Portuguese.
 
-**More projects:** [Tox21 toxicity prediction](https://github.com/ncdomingues/tox21-toxicity) · [Portuguese education data](https://github.com/ncdomingues/portuguese-education-data)
+**More projects:** [Tox21 toxicity prediction](https://github.com/ncdomingues/tox21-toxicity) · [Portuguese education data](https://github.com/ncdomingues/portuguese-education-data) · [Spotting students at risk in online courses](https://github.com/ncdomingues/online-course-dropout)
 
 ## Key findings
 1. **Most trials don't stop because the drug failed.** The most common reasons are slow enrollment (35% of terminations), business or strategic decisions (11%) and funding (6%). Lack of efficacy (9%) and safety (5%) are less common.
